@@ -167,6 +167,95 @@ let package = Package(
 )
 ```
 
+
+## Example: Clock
+
+A simple digital clock.
+
+```shell
+swift@f296eaf9ee96:~$ mkdir clock && cd clock && swift package init --type executable
+Creating executable package: clock
+Creating Package.swift
+Creating README.md
+Creating .gitignore
+Creating Sources/
+Creating Sources/clock/main.swift
+Creating Tests/
+```
+
+Then edit the `Package.swift` file to look like this:
+```swift
+// swift-tools-version:4.0
+
+import PackageDescription
+
+let package = Package(
+    name: "clock",
+    dependencies: [
+        .package(url: "https://github.com/SwiftyLinkerKit/SwiftyLinkerKit.git",
+                 from: "0.1.0"),
+    ],
+    targets: [
+        .target(
+            name: "clock",
+            dependencies: [ "SwiftyLinkerKit" ]),
+    ]
+)
+```
+
+Edit the `Sources/clock/main.swift` with the following Swift code. In the
+example the LK-Digi is connected to the Digital-4/5 slot of the LK-RB-Shield,
+adjust accordingly.
+
+```swift
+import SwiftyLinkerKit
+import Dispatch
+
+let shield  = LKRBShield.default
+let display = LKDigi()
+
+shield.connect(display, to: .digital45)
+
+let timer = DispatchSource.makeTimerSource()
+
+timer.setEventHandler {
+    display.showTime()
+}
+
+timer.schedule(deadline  : .now(),
+               repeating : .seconds(1),
+               leeway    : .milliseconds(1))
+timer.resume()
+
+dispatchMain()
+```
+
+Build everything:
+```shell
+swift@f296eaf9ee96:~/testit$ swift build
+Fetching https://github.com/SwiftyLinkerKit/SwiftyLinkerKit.git
+Fetching https://github.com/uraimo/SwiftyGPIO.git
+Fetching https://github.com/AlwaysRightInstitute/SwiftyTM1637.git
+Cloning https://github.com/SwiftyLinkerKit/SwiftyLinkerKit.git
+Resolving https://github.com/SwiftyLinkerKit/SwiftyLinkerKit.git at 0.1.0
+Cloning https://github.com/uraimo/SwiftyGPIO.git
+Resolving https://github.com/uraimo/SwiftyGPIO.git at 1.0.5
+Cloning https://github.com/AlwaysRightInstitute/SwiftyTM1637.git
+Resolving https://github.com/AlwaysRightInstitute/SwiftyTM1637.git at 0.1.2
+Compile Swift Module 'SwiftyGPIO' (10 sources)
+Compile Swift Module 'SwiftyTM1637' (5 sources)
+Compile Swift Module 'SwiftyLinkerKit' (5 sources)
+Compile Swift Module 'clock' (1 sources)
+Linking /home/swift/clock/.build/armv7-unknown-linux-gnueabihf/debug/clock
+```
+
+You need to run it using `sudo` (password in the Docker is `swift`):
+```shell
+swift@f296eaf9ee96:~/testit$ sudo .build/armv7-unknown-linux-gnueabihf/debug/clock
+```
+
+
+
 Want to see it in action?
 <a href="https://twitter.com/helje5/status/1004022796924674048">SwiftyLinkerKit driven input/output using LinkerKit components</a>
 
