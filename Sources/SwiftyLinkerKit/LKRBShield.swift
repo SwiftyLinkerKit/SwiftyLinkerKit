@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftyGPIO
+import Dispatch
 
 open class LKRBShield {
   
