@@ -12,6 +12,20 @@
  *
  *   http://www.linkerkit.de/index.php?title=LK-Button2
  *
+ * Example:
+ *
+ *     let shield  = LKRBShield.default
+ *     let buttons = LKButton2()
+ *
+ *     shield.connect(buttons, to: .digital2122)
+ *
+ *     buttons.onPress1 {
+ *         print("Button 1 was pressed!")
+ *     }
+ *     buttons.onChange2 { isPressed in
+ *         print("Button 2 changed, it is now: \(isPressed ? "pressed" : "off" )")
+ *     }
+ *
  */
 open class LKButton2 : LKAccessoryBase  {
   
@@ -84,6 +98,9 @@ open class LKButton2 : LKAccessoryBase  {
   // MARK: - Accessory Registration
   
   override open func shield(_ shield: LKRBShield, connectedTo socket: Socket) {
+    assert(socket.isDigital, "attempt to connect digital accessory \(self) " +
+                             "to non-digital socket: \(socket)")
+    
     guard let ( gpio0, gpio1 ) = shield.gpios(for: socket) else { return }
     
     #if !os(macOS)

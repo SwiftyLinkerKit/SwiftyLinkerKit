@@ -5,6 +5,26 @@
 //  Created by Helge Hess on 08.06.18.
 //
 
+/**
+ * The LK-PIR move detection sensor.
+ *
+ * Detailed information can be found over here:
+ *
+ *   http://www.linkerkit.de/index.php?title=LK-PIR
+ *
+ * Example:
+ *
+ *     import SwiftyLinkerKit
+ *
+ *     let shield   = LKRBShield.default
+ *     let watchdog = LKPIR()
+ *
+ *     watchdog.onChange { didMove in
+ *         if didMove { print("careful, don't move!") }
+ *         else       { print("nothing is moving.")   }
+ *     }
+ *
+ */
 open class LKPIR : LKAccessoryBase {
   
   public var signal : GPIO?
@@ -36,6 +56,8 @@ open class LKPIR : LKAccessoryBase {
   // MARK: - Accessory Registration
   
   override open func shield(_ shield: LKRBShield, connectedTo socket: Socket) {
+    assert(socket.isDigital, "attempt to connect digital accessory \(self) " +
+                             "to non-digital socket: \(socket)")
     guard let ( gpio0, _ ) = shield.gpios(for: socket) else { return }
     
     #if !os(macOS)

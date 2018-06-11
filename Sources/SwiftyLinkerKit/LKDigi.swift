@@ -15,6 +15,25 @@ import SwiftyTM1637
  *
  *   http://www.linkerkit.de/index.php?title=LK-Digi
  *
+ * Example:
+ *
+ *     let shield  = LKRBShield.default
+ *     let display = LKDigi()
+ *
+ *     display.show("SWIFT")
+ *     sleep(2)
+ *
+ *     display.show(1337)
+ *     sleep(2)
+ *
+ *     display.showTime()
+ *     sleep(2)
+ *
+ *     for i in (0...10).reversed {
+ *         display.show(i)
+ *         sleep(1)
+ *     }
+ *
  */
 open class LKDigi : LKAccessoryBase {
   
@@ -212,6 +231,9 @@ open class LKDigi : LKAccessoryBase {
   // MARK: - Accessory Registration
   
   override open func shield(_ shield: LKRBShield, connectedTo socket: Socket) {
+    assert(socket.isDigital, "attempt to connect digital accessory \(self) " +
+                             "to non-digital socket: \(socket)")
+    
     guard let ( gpio0, gpio1 ) = shield.gpios(for: socket) else { return }
     
     assert(display == nil)

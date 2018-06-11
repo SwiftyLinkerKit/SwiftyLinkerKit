@@ -103,6 +103,25 @@ watchdog.onChange { didMove in
 }
 ```
 
+### LK-Temp
+
+<a href="http://www.linkerkit.de/index.php?title=LK-Temp"><img align="right" width="128" src="http://www.linkerkit.de/images/thumb/6/6a/LK-Temp.png/358px-LK-Temp.png" /></a>
+
+Temperature sensor, uses a thermistor to detect the environmental temperature.
+LK-Temp is connected to one of the *analog* ports (and hosted via the board ADC
+running on SPI).
+
+```swift
+import SwiftyLinkerKit
+
+let shield      = LKRBShield.default
+let thermometer = LKTemp(interval: 5.0, valueType: .celsius)
+
+thermometer.onChange { temperature in
+    print("Temperatur is", temperature, "℃")
+}
+```
+
 
 ## How to setup and run
 

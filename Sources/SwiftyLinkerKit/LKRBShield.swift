@@ -9,18 +9,36 @@ import Foundation
 import SwiftyGPIO
 import Dispatch
 
+/**
+ * The LK-Base-RB2 Shield for Raspberry Pi 3 boards.
+ *
+ * Ports:
+ * - UART
+ * - I2C
+ * - 12 digital sockets
+ * -  4 analog sockets (SPI ADC on board)
+ *
+ * Detailed information can be found over here:
+ *
+ *   http://www.linkerkit.de/index.php?title=LK-Base-RB_2
+ *
+ */
 open class LKRBShield {
   
-  public static let `default`    = LKRBShield(gpios: defaultGPIOs)
+  public static let `default`    = LKRBShield(gpios: defaultGPIOs,
+                                              spis:  defaultSPIs)
   public static var defaultGPIOs = SwiftyGPIO.GPIOs(for: .RaspberryPi3)
+  public static var defaultSPIs  = SwiftyGPIO.hardwareSPIs(for: .RaspberryPi3)
   
   public  let gpios       : [ GPIOName : GPIO ]
+  public  let spis        : [ SPIInterface ]
   private var accessories = [ Socket   : LKAccessory ]()
   
   public  let Q = DispatchQueue(label: "de.zeezide.linkerkit.Q.shield")
   
-  public init(gpios: [ GPIOName: GPIO ]) {
+  public init(gpios: [ GPIOName: GPIO ], spis: [ SPIInterface ]?) {
     self.gpios = gpios
+    self.spis  = spis ?? []
     _ = atexit {
       teardownShield()
     }
@@ -31,6 +49,13 @@ open class LKRBShield {
     guard let gpio0 = gpios[names.0]   else { return nil }
     guard let gpio1 = gpios[names.1]   else { return nil }
     return ( gpio0, gpio1 )
+  }
+  
+  open func analogInfo(for socket: Socket) -> ( SPIInterface, UInt8, UInt8 )? {
+    guard let pins = socket.analogPINs else { return nil }
+    guard let spi  = spis.first else { return nil } // TBD: hardcoded by board?
+    
+    return ( spi, pins.0, pins.1 )
   }
   
   // MARK: - Threadsafe API
@@ -167,15 +192,27 @@ open class LKRBShield {
         case .digital1314: return ( .P13, .P14 )
         case .digital1213: return ( .P12, .P13 )
         case .digital56:   return ( .P5,  .P6  )
-        case .analog01:    return ( .P0,  .P1  )
-        case .analog23:    return ( .P2,  .P3  )
+        case .analog01:    return ( .P0,  .P1  ) // TBD
+        case .analog23:    return ( .P2,  .P3  ) // TBD
         case .digital2627: return ( .P26, .P27 )
         case .digital2526: return ( .P25, .P26 )
         case .digital2122: return ( .P21, .P22 )
         case .digital2021: return ( .P20, .P21 )
         case .digital1920: return ( .P19, .P20 )
-        case .analog45:    return ( .P4,  .P5  )
-        case .analog67:    return ( .P6,  .P7  )
+        case .analog45:    return ( .P4,  .P5  ) // TBD
+        case .analog67:    return ( .P6,  .P7  ) // TBD
+      }
+    }
+    
+    public var analogPINs : ( UInt8, UInt8 )? {
+      switch self {
+        case .analog01:    return ( 0, 1 )
+        case .analog23:    return ( 2, 3 )
+        case .analog45:    return ( 4, 5 )
+        case .analog67:    return ( 6, 7 )
+        default:
+          assert(!isAnalog)
+          return nil
       }
     }
     
@@ -199,6 +236,51 @@ open class LKRBShield {
         case .digital1920: return ( 3, 5 )
         case .analog45:    return ( 3, 6 )
         case .analog67:    return ( 3, 7 )
+      }
+    }
+    
+    public var isDigital : Bool {
+      switch self {
+        case .uart:        return false
+        case .i2c:         return false
+        case .digital45:   return true
+        case .digital23:   return true
+        case .digital1516: return true
+        case .digital1415: return true
+        case .digital1314: return true
+        case .digital1213: return true
+        case .digital56:   return true
+        case .analog01:    return false
+        case .analog23:    return false
+        case .digital2627: return true
+        case .digital2526: return true
+        case .digital2122: return true
+        case .digital2021: return true
+        case .digital1920: return true
+        case .analog45:    return false
+        case .analog67:    return false
+      }
+    }
+    public var isAnalog : Bool {
+      switch self {
+        case .uart:        return false
+        case .i2c:         return false
+        case .digital45:   return false
+        case .digital23:   return false
+        case .digital1516: return false
+        case .digital1415: return false
+        case .digital1314: return false
+        case .digital1213: return false
+        case .digital56:   return false
+        case .analog01:    return true
+        case .analog23:    return true
+        case .digital2627: return false
+        case .digital2526: return false
+        case .digital2122: return false
+        case .digital2021: return false
+        case .digital1920: return false
+        case .analog45:    return true
+        case .analog67:    return true
       }
     }
   }
