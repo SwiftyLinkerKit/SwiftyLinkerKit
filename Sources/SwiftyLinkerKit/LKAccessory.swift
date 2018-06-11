@@ -106,7 +106,7 @@ open class LKAccessoryBase : LKAccessory, CustomStringConvertible {
   public var description: String {
     lock.lock(); defer { lock.unlock() }
 
-    var ms = "<\(accessoryType): "
+    var ms = "<\(accessoryType):"
     lockedAppendToDescription(&ms)
     ms += ">"
     return ms
