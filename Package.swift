@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "SwiftyLinkerKit",
     products: [
-      .library   (name: "SwiftyLinkerKit", targets: [ "SwiftyLinkerKit" ]),
+      .library(name: "SwiftyLinkerKit", targets: [ "SwiftyLinkerKit" ])
     ],
     dependencies: [
         .package(url: "https://github.com/uraimo/SwiftyGPIO.git",
@@ -16,6 +16,9 @@ let package = Package(
     targets: [
         .target(
             name: "SwiftyLinkerKit",
-            dependencies: [ "SwiftyTM1637", "SwiftyGPIO" ])
+            dependencies: [ "SwiftyTM1637", "SwiftyGPIO" ]),
+        .target(
+            name: "clock",
+            dependencies: [ "SwiftyLinkerKit" ]),
     ]
 )
