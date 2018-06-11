@@ -70,6 +70,8 @@ import SwiftyLinkerKit
 let shield  = LKRBShield.default
 let display = LKDigi()
 
+shield.connect(display, to: .digital45)
+
 display.show("SWIFT")
 sleep(2)
 
@@ -96,6 +98,8 @@ import SwiftyLinkerKit
 
 let shield   = LKRBShield.default
 let watchdog = LKPIR()
+
+shield.connect(watchdog, to: .digital1213)
 
 watchdog.onChange { didMove in
     if didMove { print("careful, don't move!") }
