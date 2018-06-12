@@ -180,7 +180,7 @@ let package = Package(
     name: "testit",
     dependencies: [
         .package(url: "https://github.com/SwiftyLinkerKit/SwiftyLinkerKit.git",
-                 from: "0.1.0"),
+                 from: "0.1.3"),
     ],
     targets: [
         .target(
@@ -196,13 +196,13 @@ let package = Package(
 A simple digital clock.
 
 ```shell
-swift@f296eaf9ee96:~$ mkdir clock && cd clock && swift package init --type executable
-Creating executable package: clock
+swift@f296eaf9ee96:~$ mkdir dclock && cd dclock && swift package init --type executable
+Creating executable package: dclock
 Creating Package.swift
 Creating README.md
 Creating .gitignore
 Creating Sources/
-Creating Sources/clock/main.swift
+Creating Sources/dclock/main.swift
 Creating Tests/
 ```
 
@@ -213,20 +213,20 @@ Then edit the `Package.swift` file to look like this:
 import PackageDescription
 
 let package = Package(
-    name: "clock",
+    name: "dclock",
     dependencies: [
         .package(url: "https://github.com/SwiftyLinkerKit/SwiftyLinkerKit.git",
-                 from: "0.1.0"),
+                 from: "0.1.3"),
     ],
     targets: [
         .target(
-            name: "clock",
+            name: "dclock",
             dependencies: [ "SwiftyLinkerKit" ]),
     ]
 )
 ```
 
-Edit the `Sources/clock/main.swift` with the following Swift code. In the
+Edit the `Sources/dclock/main.swift` with the following Swift code. In the
 example the LK-Digi is connected to the Digital-4/5 slot of the LK-RB-Shield,
 adjust accordingly.
 
@@ -255,7 +255,7 @@ dispatchMain()
 
 Build everything:
 ```shell
-swift@f296eaf9ee96:~/testit$ swift build
+swift@f296eaf9ee96:~/dclock$ swift build
 Fetching https://github.com/SwiftyLinkerKit/SwiftyLinkerKit.git
 Fetching https://github.com/uraimo/SwiftyGPIO.git
 Fetching https://github.com/AlwaysRightInstitute/SwiftyTM1637.git
@@ -269,12 +269,12 @@ Compile Swift Module 'SwiftyGPIO' (10 sources)
 Compile Swift Module 'SwiftyTM1637' (5 sources)
 Compile Swift Module 'SwiftyLinkerKit' (5 sources)
 Compile Swift Module 'clock' (1 sources)
-Linking /home/swift/clock/.build/armv7-unknown-linux-gnueabihf/debug/clock
+Linking /home/swift/dclock/.build/armv7-unknown-linux-gnueabihf/debug/dclock
 ```
 
 You need to run it using `sudo` (password in the Docker is `swift`):
 ```shell
-swift@f296eaf9ee96:~/testit$ sudo .build/armv7-unknown-linux-gnueabihf/debug/clock
+swift@f296eaf9ee96:~/dclock$ sudo .build/armv7-unknown-linux-gnueabihf/debug/dclock
 ```
 
 
