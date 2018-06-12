@@ -41,20 +41,28 @@ open class LKButton2 : LKAccessoryBase  {
   
   // MARK: - API
   
-  open func onChange1(_ cb: @escaping ( Bool ) -> ()) {
+  @discardableResult
+  open func onChange1(_ cb: @escaping ( Bool ) -> ()) -> Self {
     asyncLocked { self.change1Listeners.append(cb) }
+    return self
   }
-  open func onChange2(_ cb: @escaping ( Bool ) -> ()) {
+  @discardableResult
+  open func onChange2(_ cb: @escaping ( Bool ) -> ()) -> Self {
     asyncLocked { self.change2Listeners.append(cb) }
+    return self
   }
   
-  open func onPress1(_ vcb: @escaping () -> ()) {
+  @discardableResult
+  open func onPress1(_ vcb: @escaping () -> ()) -> Self {
     let cb : ( Bool ) -> () = { flag in if flag { vcb() }}
     asyncLocked { self.change1Listeners.append(cb) }
+    return self
   }
-  open func onPress2(_ vcb: @escaping () -> ()) {
+  @discardableResult
+  open func onPress2(_ vcb: @escaping () -> ()) -> Self {
     let cb : ( Bool ) -> () = { flag in if flag { vcb() }}
     asyncLocked { self.change2Listeners.append(cb) }
+    return self
   }
 
   open func removeAllListeners() {

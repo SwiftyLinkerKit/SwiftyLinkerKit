@@ -33,8 +33,10 @@ open class LKPIR : LKAccessoryBase {
   
   // MARK: - API
   
-  open func onChange(_ cb: @escaping ( Bool ) -> ()) {
+  @discardableResult
+  open func onChange(_ cb: @escaping ( Bool ) -> ()) -> Self {
     asyncLocked { self.listeners.append(cb) }
+    return self
   }
   
   open func removeAllListeners() {

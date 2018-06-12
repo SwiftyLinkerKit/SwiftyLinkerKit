@@ -60,11 +60,14 @@ open class LKRBShield {
   
   // MARK: - Threadsafe API
   
-  open func connect(_ accessory: LKAccessory, to socket: Socket) {
+  @discardableResult
+  open func connect<T: LKAccessory>(_ accessory: T, to socket: Socket) -> T {
     Q.async {
       self._connect(accessory, to: socket)
     }
+    return accessory
   }
+  
   open func disconnect(_ accessory: LKAccessory) {
     Q.async {
       self._disconnect(accessory)

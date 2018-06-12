@@ -60,8 +60,10 @@ open class LKTemp : LKAccessoryBase {
   
   // MARK: - API
   
-  open func onChange(_ cb: @escaping ( Double ) -> ()) {
+  @discardableResult
+  open func onChange(_ cb: @escaping ( Double ) -> ()) -> Self {
     asyncLocked { self.listeners.append(cb) }
+    return self
   }
   
   open func removeAllListeners() {
